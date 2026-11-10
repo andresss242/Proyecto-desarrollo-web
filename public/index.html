@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Buscador de sinónimos y antónimos</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <h1>Buscador de sinónimos y antónimos</h1>
+
+        <label for="palabra">Escribe una palabra:</label>
+
+        <input
+            type="text"
+            id="palabra"
+            placeholder="Ejemplo: feliz"
+        >
+
+        <button id="buscar">Buscar</button>
+
+        <p id="mensaje"></p>
+
+        <section id="resultado" hidden>
+
+            <h2 id="nombre"></h2>
+
+            <h3>Sinónimos</h3>
+            <ul id="sinonimos"></ul>
+
+            <h3>Antónimos</h3>
+            <ul id="antonimos"></ul>
+
+        </section>
+
+    </main>
+
+    <script type="module" src="script.mjs"></script>
+
+</body>
+
+</html>
