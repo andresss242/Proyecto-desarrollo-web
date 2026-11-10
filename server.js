@@ -1,9 +1,4 @@
-// =========================================================
-// Backend del buscador (Node.js + Express)
-// - Sirve el frontend de /public (mismo origen, sin CORS)
-// - Ruta GET /api/palabra/:texto que consulta la Free Dictionary
-//   API y guarda en memoria las respuestas para no repetirlas
-// =========================================================
+
 
 import express from "express";
 import dotenv from "dotenv";

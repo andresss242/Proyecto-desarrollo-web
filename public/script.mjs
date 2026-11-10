@@ -1,14 +1,15 @@
-/* =========================================================
-   Buscador de sinónimos y antónimos
-   - Free Dictionary API (no pide clave ni registro)
-   ========================================================= */
 
-// URL pública de la API y ruta de nuestro backend (server.js)
 const API_DIRECTA = "https://freedictionaryapi.com/api/v1/entries/es/";
 const API_BACKEND = "/api/palabra/";
 
+const CLAVES = {
+    modo: "modo",                       
+    ultima: "ultimaPalabra",            
+    contador: "busquedasSesion",        
+    cache: "cache:"                     
+};
 
-// La API devuelve la categoría gramatical en inglés
+
 const CATEGORIAS = {
     noun: "sustantivo",
     verb: "verbo",
@@ -24,7 +25,7 @@ const CATEGORIAS = {
 };
 
 
-// ---------- Elementos del DOM ----------
+const html = document.documentElement;
 const formulario = document.querySelector("#formulario");
 const palabra = document.querySelector("#palabra");
 const buscar = document.querySelector("#buscar");
@@ -40,8 +41,32 @@ const antonimos = document.querySelector("#antonimos");
 const contadorSinonimos = document.querySelector("#contadorSinonimos");
 const contadorAntonimos = document.querySelector("#contadorAntonimos");
 
+const botonModo = document.querySelector("#modo");
+const olvidar = document.querySelector("#olvidar");
+const contadorSesion = document.querySelector("#contadorSesion");
 
-// ---------- Mensajes integrados (en vez de alert) ----------
+
+
+
+function leer(almacen, clave, porDefecto) {
+    try {
+        const texto = almacen.getItem(clave);
+        return texto === null ? porDefecto : JSON.parse(texto);
+    } catch (error) {
+        return porDefecto;
+    }
+}
+
+function guardar(almacen, clave, valor) {
+    try {
+        almacen.setItem(clave, JSON.stringify(valor));
+    } catch (error) {
+        console.log("No se pudo guardar", clave);
+    }
+}
+
+
+
 let temporizadorMensaje;
 
 function mostrarMensaje(texto, tipo) {
@@ -56,7 +81,7 @@ function mostrarMensaje(texto, tipo) {
     mensaje.className = "mt-3 alert alert-" + tipo + " mb-0";
     mensaje.textContent = texto;
 
-    // Los mensajes de éxito desaparecen solos
+
     if (tipo === "success") {
         temporizadorMensaje = setTimeout(function () {
             mostrarMensaje("");
@@ -65,7 +90,22 @@ function mostrarMensaje(texto, tipo) {
 }
 
 
-// ---------- Búsqueda ----------
+
+function aplicarTema(modo) {
+    const oscuro = modo === "oscuro";
+    html.dataset.bsTheme = oscuro ? "dark" : "light";
+    botonModo.textContent = oscuro ? "Tema claro" : "Tema oscuro";
+    botonModo.setAttribute("aria-pressed", String(oscuro));
+}
+
+botonModo.addEventListener("click", function () {
+    const nuevo = html.dataset.bsTheme === "dark" ? "claro" : "oscuro";
+    aplicarTema(nuevo);
+    guardar(localStorage, CLAVES.modo, nuevo);
+    mostrarMensaje("Tema " + nuevo + " guardado.", "success");
+});
+
+
 formulario.addEventListener("submit", function (evento) {
     evento.preventDefault();
     buscarPalabra(palabra.value);
@@ -85,7 +125,6 @@ async function buscarPalabra(textoOriginal) {
         return;
     }
 
-    // Evita búsquedas repetidas si el usuario hace clic varias veces
     if (buscando) {
         return;
     }
@@ -100,6 +139,8 @@ async function buscarPalabra(textoOriginal) {
         const datos = await obtenerDatos(texto);
 
         mostrarResultado(datos);
+        guardar(sessionStorage, CLAVES.ultima, texto);
+        sumarBusquedaSesion();
         mostrarMensaje("");
 
     } catch (error) {
@@ -123,9 +164,12 @@ function ponerCargando(cargando) {
 }
 
 
-// Pide los datos: primero a la caché de la pestaña, luego a
-// nuestro backend (si existe) y si no, directo a la API pública.
 async function obtenerDatos(texto) {
+
+    const enCache = leer(sessionStorage, CLAVES.cache + texto, null);
+    if (enCache) {
+        return enCache;
+    }
 
     let datos = null;
 
@@ -137,12 +181,12 @@ async function obtenerDatos(texto) {
         datos = await pedirJSON(API_DIRECTA + encodeURIComponent(texto), false);
     }
 
+    guardar(sessionStorage, CLAVES.cache + texto, datos);
     return datos;
 }
 
 
-// Devuelve el JSON, lanza un error con mensaje claro, o devuelve
-// null si es el backend y no está disponible (sitio estático).
+
 async function pedirJSON(url, esBackend) {
 
     const control = new AbortController();
@@ -168,8 +212,7 @@ async function pedirJSON(url, esBackend) {
 
     const tipo = respuesta.headers.get("content-type") || "";
 
-    // En Netlify o con Live Server no hay backend: /api/... no devuelve JSON
-    // Si el backend falla (error 5xx), se intenta directo con la API
+
     if (esBackend && (!tipo.includes("json") || respuesta.status >= 500)) {
         return null;
     }
@@ -186,7 +229,7 @@ async function pedirJSON(url, esBackend) {
 }
 
 
-// ---------- Mostrar el resultado ----------
+
 function mostrarResultado(datos) {
 
     resultado.hidden = false;
@@ -209,7 +252,7 @@ function mostrarResultado(datos) {
         });
     }
 
-    // Los sentidos pueden tener subsentidos: se recorren todos
+
     function recorrerSentidos(sentidos) {
         if (!Array.isArray(sentidos)) {
             return;
@@ -249,7 +292,6 @@ function mostrarResultado(datos) {
 }
 
 
-// Cada palabra es un botón: al pulsarlo se busca esa palabra
 function mostrarLista(listaHTML, lista, mensajeVacio, estilo) {
 
     listaHTML.replaceChildren();
@@ -283,4 +325,64 @@ function crearChip(texto, estilo) {
 }
 
 
-// ---------- Al cargar la página ----------
+function sumarBusquedaSesion() {
+    const total = Number(leer(sessionStorage, CLAVES.contador, 0)) + 1;
+    guardar(sessionStorage, CLAVES.contador, total);
+    pintarContador();
+}
+
+function pintarContador() {
+    const total = Number(leer(sessionStorage, CLAVES.contador, 0));
+    contadorSesion.textContent = total > 0
+        ? "Búsquedas en esta pestaña: " + total + "."
+        : "";
+}
+
+
+let confirmando = false;
+let temporizadorOlvidar;
+
+olvidar.addEventListener("click", function () {
+
+    if (!confirmando) {
+        confirmando = true;
+        olvidar.textContent = "¿Seguro? Pulsa de nuevo para borrar";
+        temporizadorOlvidar = setTimeout(reiniciarBotonOlvidar, 4000);
+        return;
+    }
+
+    clearTimeout(temporizadorOlvidar);
+    reiniciarBotonOlvidar();
+
+    try {
+        Object.values(CLAVES).forEach(function (clave) {
+            localStorage.removeItem(clave);
+        });
+        sessionStorage.clear();
+    } catch (error) {
+    }
+
+    aplicarTema("claro");
+    resultado.hidden = true;
+    palabra.value = "";
+    pintarContador();
+    mostrarMensaje("Se borraron todos los datos guardados en este navegador.", "success");
+});
+
+function reiniciarBotonOlvidar() {
+    confirmando = false;
+    olvidar.textContent = "Olvidar mis datos";
+}
+
+
+aplicarTema(leer(localStorage, CLAVES.modo, "claro"));
+pintarContador();
+
+const ultima = leer(sessionStorage, CLAVES.ultima, null);
+if (ultima) {
+    const datosGuardados = leer(sessionStorage, CLAVES.cache + ultima, null);
+    if (datosGuardados) {
+        palabra.value = ultima;
+        mostrarResultado(datosGuardados);
+    }
+}
