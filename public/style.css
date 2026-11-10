@@ -1,78 +1,161 @@
+/* =========================================================
+   Estilos propios: Bootstrap hace casi todo; aquí solo
+   va la paleta del proyecto y las microinteracciones.
+   ========================================================= */
+
+/* Paleta en un solo lugar (variables CSS)
+   - Verde azulado: color principal (botón, títulos, sinónimos)
+   - Coral: antónimos (lo opuesto se ve distinto)
+   - Gris pizarra: subtítulos y botón de tema */
+:root {
+    --color-principal: #0f766e;        /* blanco sobre este color: 5.47 a 1 */
+    --color-principal-hover: #115e59;  /* blanco sobre este color: 7.58 a 1 */
+    --color-principal-texto: #0f766e;
+    --color-antonimo: #c2410c;         /* sobre blanco: 5.18 a 1 */
+    --color-subtitulo: #334155;        /* sobre blanco: 10.35 a 1 */
+    --color-neutro: #475569;           /* sobre blanco: 7.58 a 1 */
+    --fondo-pagina: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 45%, #fff7ed 100%);
+}
+
+[data-bs-theme="dark"] {
+    --color-principal-texto: #5eead4;  /* sobre #212529: 10.43 a 1 */
+    --color-antonimo: #fdba74;         /* sobre #212529: 9.15 a 1 */
+    --color-subtitulo: #cbd5e1;        /* sobre #212529: 10.39 a 1 */
+    --color-neutro: #cbd5e1;
+    --fondo-pagina: linear-gradient(135deg, #042f2e 0%, #0f172a 55%, #1c1917 100%);
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #dbeafe, #ede9fe);
-    margin: 0;
-    padding: 40px;
+    min-height: 100vh;
+    background: var(--fondo-pagina);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-main {
-    max-width: 700px;
-    margin: auto;
-    background-color: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+/* Botón principal */
+.btn-primary {
+    --bs-btn-bg: var(--color-principal);
+    --bs-btn-border-color: var(--color-principal);
+    --bs-btn-hover-bg: var(--color-principal-hover);
+    --bs-btn-hover-border-color: var(--color-principal-hover);
+    --bs-btn-active-bg: #134e4a;
+    --bs-btn-active-border-color: #134e4a;
+    --bs-btn-disabled-bg: #6b7280;      /* gris apagado: blanco sobre él 4.83 a 1 */
+    --bs-btn-disabled-border-color: #6b7280;
 }
 
-h1 {
-    text-align: center;
-    color: #4f46e5;
+/* Chips: cada tipo de palabra tiene su color.
+   El texto del chip usa el color; al pasar el mouse se rellena. */
+.btn-outline-primary,
+.btn-antonimo,
+.btn-outline-secondary {
+    --bs-btn-color: var(--chip);
+    --bs-btn-border-color: var(--chip);
+    --bs-btn-hover-color: var(--chip-texto-hover);
+    --bs-btn-hover-bg: var(--chip);
+    --bs-btn-hover-border-color: var(--chip);
+    --bs-btn-active-color: var(--chip-texto-hover);
+    --bs-btn-active-bg: var(--chip);
+    --bs-btn-active-border-color: var(--chip);
+    --chip-texto-hover: #fff;
 }
 
-label {
-    color: #374151;
-    font-weight: bold;
+.btn-outline-primary   { --chip: var(--color-principal-texto); }
+.btn-antonimo          { --chip: var(--color-antonimo); }
+.btn-outline-secondary { --chip: var(--color-neutro); }
+
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-antonimo,
+[data-bs-theme="dark"] [data-bs-theme="dark"] .btn-outline-secondary {
+    --chip-texto-hover: #212529;       /* texto oscuro sobre color claro: más de 9 a 1 */
 }
 
-input {
-    padding: 12px;
-    width: 60%;
-    border: 2px solid #c7d2fe;
-    border-radius: 8px;
-    margin-top: 8px;
+/* Contadores con el color de su lista */
+.badge-sinonimo {
+    background-color: var(--color-principal);
+    color: #fff;
 }
 
-input:focus {
-    outline: none;
-    border-color: #6366f1;
+.badge-antonimo {
+    background-color: #c2410c;
+    color: #fff;
 }
 
-button {
-    padding: 12px 22px;
-    background-color: #6366f1;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+/* Borde superior de color en la tarjeta del resultado */
+.tarjeta-resultado {
+    border-top: 4px solid var(--color-principal-texto);
 }
 
-button:hover {
-    background-color: #4f46e5;
+/* Jerarquía visual: títulos con el color de marca */
+.titulo {
+    color: var(--color-principal-texto);
+    font-weight: 700;
 }
 
-#mensaje {
-    color: #dc2626;
-    font-weight: bold;
+.subtitulo {
+    color: var(--color-subtitulo);
+    font-weight: 600;
 }
 
-#resultado {
-    margin-top: 25px;
-    padding: 20px;
-    border: 2px solid #c7d2fe;
-    border-radius: 10px;
-    background-color: #f8faff;
+/* Microinteracción: botones que se "hunden" al pulsarlos */
+.btn {
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
 }
 
-#nombre {
-    color: #4f46e5;
+.btn:active:not(:disabled) {
+    transform: scale(0.97);
 }
 
-h3 {
-    color: #7c3aed;
+.btn:disabled {
+    cursor: not-allowed;
 }
 
-li {
-    margin: 8px;
-    color: #374151;
+/* Etiquetas clicables (sinónimos y antónimos) */
+.chip {
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
 }
+
+.chip:hover {
+    transform: translateY(-2px);
+}
+
+/* Tarjeta del resultado: aparece con una animación suave */
+.tarjeta-resultado:not([hidden]) {
+    animation: aparecer 0.35s ease;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aviso de privacidad discreto pero legible */
+.aviso-privacidad {
+    background-color: var(--bs-tertiary-bg);
+}
+
+/* Foco visible solo al navegar con teclado (nunca se quita sin reemplazo) */
+.btn:focus-visible,
+.form-control:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--color-principal-texto);
+    outline-offset: 3px;
+    box-shadow: none;
+}
+
+/* Respeto a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
