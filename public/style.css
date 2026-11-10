@@ -1,18 +1,17 @@
-
 :root {
     --color-principal: #0f766e;
-    --color-principal-hover: #115e59;  
+    --color-principal-hover: #115e59;
     --color-principal-texto: #0f766e;
-    --color-antonimo: #c2410c;         
-    --color-subtitulo: #334155;        
-    --color-neutro: #475569;     
+    --color-antonimo: #c2410c;
+    --color-subtitulo: #334155;
+    --color-neutro: #475569;
     --fondo-pagina: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 45%, #fff7ed 100%);
 }
 
 [data-bs-theme="dark"] {
-    --color-principal-texto: #5eead4;  
-    --color-antonimo: #fdba74;         
-    --color-subtitulo: #cbd5e1;     
+    --color-principal-texto: #5eead4;
+    --color-antonimo: #fdba74;
+    --color-subtitulo: #cbd5e1;
     --color-neutro: #cbd5e1;
     --fondo-pagina: linear-gradient(135deg, #042f2e 0%, #0f172a 55%, #1c1917 100%);
 }
@@ -30,7 +29,7 @@ body {
     --bs-btn-hover-border-color: var(--color-principal-hover);
     --bs-btn-active-bg: #134e4a;
     --bs-btn-active-border-color: #134e4a;
-    --bs-btn-disabled-bg: #6b7280;      
+    --bs-btn-disabled-bg: #6b7280;
     --bs-btn-disabled-border-color: #6b7280;
 }
 
@@ -54,8 +53,9 @@ body {
 
 [data-bs-theme="dark"] .btn-outline-primary,
 [data-bs-theme="dark"] .btn-antonimo,
-[data-bs-theme="dark"] [data-bs-theme="dark"] .btn-outline-secondary {
-    --chip-texto-hover: #212529;       
+[data-bs-theme="dark"] .btn-outline-secondary {
+    --chip-texto-hover: #212529;
+}
 
 .badge-sinonimo {
     background-color: var(--color-principal);
@@ -136,5 +136,4 @@ a:focus-visible {
         animation: none !important;
         transition: none !important;
     }
-}
 }
