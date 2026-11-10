@@ -1,0 +1,15 @@
+body {
+    min-height: 100vh;
+    background: var(--fondo-pagina);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.titulo {
+    color: var(--color-principal-texto);
+    font-weight: 700;
+}
+
+.subtitulo {
+    color: var(--color-subtitulo);
+    font-weight: 600;
+}

@@ -1,0 +1,17 @@
+:root {
+    --color-principal: #0f766e;
+    --color-principal-hover: #115e59;
+    --color-principal-texto: #0f766e;
+    --color-antonimo: #c2410c;
+    --color-subtitulo: #334155;
+    --color-neutro: #475569;
+    --fondo-pagina: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 45%, #fff7ed 100%);
+}
+
+[data-bs-theme="dark"] {
+    --color-principal-texto: #5eead4;
+    --color-antonimo: #fdba74;
+    --color-subtitulo: #cbd5e1;
+    --color-neutro: #cbd5e1;
+    --fondo-pagina: linear-gradient(135deg, #042f2e 0%, #0f172a 55%, #1c1917 100%);
+}

@@ -1,0 +1,55 @@
+.btn-primary {
+    --bs-btn-bg: var(--color-principal);
+    --bs-btn-border-color: var(--color-principal);
+    --bs-btn-hover-bg: var(--color-principal-hover);
+    --bs-btn-hover-border-color: var(--color-principal-hover);
+    --bs-btn-active-bg: #134e4a;
+    --bs-btn-active-border-color: #134e4a;
+    --bs-btn-disabled-bg: #6b7280;
+    --bs-btn-disabled-border-color: #6b7280;
+}
+
+.btn-outline-primary,
+.btn-antonimo,
+.btn-outline-secondary {
+    --bs-btn-color: var(--chip);
+    --bs-btn-border-color: var(--chip);
+    --bs-btn-hover-color: var(--chip-texto-hover);
+    --bs-btn-hover-bg: var(--chip);
+    --bs-btn-hover-border-color: var(--chip);
+    --bs-btn-active-color: var(--chip-texto-hover);
+    --bs-btn-active-bg: var(--chip);
+    --bs-btn-active-border-color: var(--chip);
+    --chip-texto-hover: #fff;
+}
+
+.btn-outline-primary   { --chip: var(--color-principal-texto); }
+.btn-antonimo          { --chip: var(--color-antonimo); }
+.btn-outline-secondary { --chip: var(--color-neutro); }
+
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-antonimo,
+[data-bs-theme="dark"] .btn-outline-secondary {
+    --chip-texto-hover: #212529;
+}
+
+.btn {
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+}
+
+.chip {
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+}
+
+.chip:hover {
+    transform: translateY(-2px);
+}
